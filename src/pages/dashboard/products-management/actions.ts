@@ -1,7 +1,7 @@
 import api from '@/lib/api'
 import { Product } from '@/lib/types'
 
-export const deleteProduct = async (productId: string) => {
+export const deleteProduct = async (productId: number) => {
   const { data } = await api.delete(`/products/${productId}`)
   return data
 }

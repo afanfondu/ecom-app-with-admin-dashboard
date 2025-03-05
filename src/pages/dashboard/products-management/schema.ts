@@ -1,16 +1,16 @@
 import { Category } from '@/lib/types'
-import { z } from 'zod'
+import { mixed, number, object, string, InferType } from 'yup'
 
-export const productAddFormSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
-  price: z.coerce.number().positive('Price must be positive'),
-  category: z.nativeEnum(Category, {
-    message:
-      'Please select one of the following category - ' +
-      Object.values(Category).join(', ')
-  }),
-  image: z.string().url('Invalid image URL')
+export const productFormSchema = object({
+  title: string().required('Title is required'),
+  description: string().required('Description is required'),
+  price: number()
+    .positive('Price should be greater than 0')
+    .required('Price is required'),
+  category: mixed<Category>()
+    .required('Category is required')
+    .oneOf(Object.values(Category)),
+  image: string().required('Image URL is required').url('Invalid image URL')
 })
 
-export type ProductAddForm = z.infer<typeof productAddFormSchema>
+export type ProductFormType = InferType<typeof productFormSchema>

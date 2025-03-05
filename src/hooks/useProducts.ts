@@ -3,8 +3,8 @@ import { Product } from '@/lib/types'
 import { useQuery } from '@tanstack/react-query'
 
 type ProductsParams = {
-  limit: string | null
-  sort: string | null
+  limit?: string | null
+  sort?: string | null
 }
 
 const fetchProducts = async ({

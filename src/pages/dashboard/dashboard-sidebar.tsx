@@ -41,7 +41,7 @@ export default function DashboardSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Collapsible defaultOpen className="group/collapsible">
+              <Collapsible className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="flex justify-between">

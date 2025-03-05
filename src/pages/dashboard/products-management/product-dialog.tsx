@@ -14,23 +14,23 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { ProductAddForm, productAddFormSchema } from './schema'
+import { productFormSchema, ProductFormType } from './schema'
 import { addProduct, editProduct } from './actions'
 import { LoadingButton } from '@/components/shared/loading-button'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
-import { Category } from '@/lib/types'
-
-export type ProductProp = {
-  id?: number
-  title: string
-  description: string
-  price: number | undefined
-  category: Category | undefined
-  image: string
-}
+import { Category, Product } from '@/lib/types'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 export default function ProductDialog({
   selectedProduct,
@@ -39,16 +39,18 @@ export default function ProductDialog({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  selectedProduct: ProductProp
+  selectedProduct: Product | null
 }) {
-  const form = useForm<ProductAddForm>({
-    resolver: zodResolver(productAddFormSchema),
+  const form = useForm<ProductFormType>({
+    resolver: yupResolver(productFormSchema),
     values: {
-      title: selectedProduct.title,
-      description: selectedProduct.description,
-      price: selectedProduct.price as number,
-      category: selectedProduct.category as Category,
-      image: selectedProduct.image
+      title: selectedProduct ? selectedProduct.title : '',
+      description: selectedProduct ? selectedProduct.description : '',
+      price: selectedProduct ? selectedProduct.price : 0,
+      category: selectedProduct
+        ? selectedProduct.category
+        : Category.Electronics,
+      image: selectedProduct ? selectedProduct.image : ''
     }
   })
 
@@ -80,8 +82,8 @@ export default function ProductDialog({
     }
   })
 
-  async function onSubmit(values: ProductAddForm) {
-    if (selectedProduct.id) editMutate({ ...values, id: selectedProduct.id })
+  async function onSubmit(values: ProductFormType) {
+    if (selectedProduct) editMutate({ ...values, id: selectedProduct.id })
     else mutate(values)
   }
 
@@ -90,7 +92,7 @@ export default function ProductDialog({
       <DialogContent aria-describedby="Form to add or edit products">
         <DialogHeader>
           <DialogTitle>
-            {selectedProduct.title ? 'Edit Product' : 'Add New Product'}
+            {selectedProduct ? 'Edit Product' : 'Add New Product'}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
@@ -142,7 +144,21 @@ export default function ProductDialog({
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Select {...field}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Category</SelectLabel>
+                          {Object.values(Category).map((category, idx) => (
+                            <SelectItem key={idx} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -169,7 +185,7 @@ export default function ProductDialog({
               className="w-full"
               isLoading={isPending || isEditPending}
             >
-              {selectedProduct.title ? 'Update Product' : 'Add Product'}
+              {selectedProduct ? 'Update Product' : 'Add Product'}
             </LoadingButton>
           </form>
         </Form>
