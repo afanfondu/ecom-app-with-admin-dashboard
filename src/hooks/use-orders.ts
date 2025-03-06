@@ -6,7 +6,7 @@ type Cart = {
   id: number
   userId: number
   date: string
-  user: User
+  user: APIUser
   products: {
     productId: number
     quantity: number
@@ -21,7 +21,7 @@ export type Order = {
   }[]
 } & Cart
 
-type User = {
+export type APIUser = {
   address: Address
   id: number
   email: string
@@ -35,7 +35,7 @@ type User = {
 }
 
 type Address = {
-  geolocation: {
+  geolocation?: {
     lat: string
     long: string
   }
@@ -48,7 +48,7 @@ type Address = {
 const fetchOrders = async (): Promise<Order[]> => {
   const orders = await api.get<Cart[]>('/carts')
   const products = await api.get<Product[]>('/products')
-  const users = await api.get<User[]>('/users')
+  const users = await api.get<APIUser[]>('/users')
 
   return orders.data.map(order => ({
     ...order,

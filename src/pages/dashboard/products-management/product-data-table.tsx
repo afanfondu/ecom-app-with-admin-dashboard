@@ -34,6 +34,7 @@ import { getColumns } from './product-columns'
 import useProducts from '@/hooks/useProducts'
 import { useDeleteProduct } from './mutations/use-delete-product'
 import { AxiosError } from 'axios'
+import { TableSkeleton } from '../table-skeleton'
 
 export function ProductsDataTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -103,7 +104,7 @@ export function ProductsDataTable() {
     }
   })
 
-  if (isLoading) return <div>Loading....</div>
+  if (isLoading) return <TableSkeleton tableClassName="h-[435px]" />
 
   return (
     <>

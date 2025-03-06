@@ -10,6 +10,7 @@ import AdminLayout from './pages/dashboard/layout'
 import DashboardPage from './pages/dashboard/root'
 import ProductsManagementPage from './pages/dashboard/products-management'
 import OrdersManagementPage from './pages/dashboard/orders-management'
+import UsersManagementPage from './pages/dashboard/users-management'
 
 function App() {
   return (
@@ -26,6 +27,11 @@ function App() {
             path="/dashboard/management/orders"
             index
             element={<OrdersManagementPage />}
+          />
+          <Route
+            path="/dashboard/management/users"
+            index
+            element={<UsersManagementPage />}
           />
         </Route>
 

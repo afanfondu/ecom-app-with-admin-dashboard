@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/tooltip'
 import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Eye, Pencil, Trash2 } from 'lucide-react'
 import { LoadingButton } from '@/components/shared/loading-button'
 import { Link } from 'react-router'
 
@@ -24,13 +24,11 @@ export const getColumns = ({
     accessorKey: 'image',
     header: 'Image',
     cell: ({ row }) => (
-      <Link to={`/product/${row.original.id}`}>
-        <img
-          src={row.getValue('image')}
-          alt={row.getValue('title')}
-          className="w-16 h-16 object-contain"
-        />
-      </Link>
+      <img
+        src={row.getValue('image')}
+        alt={row.getValue('title')}
+        className="w-16 h-16 object-contain"
+      />
     )
   },
   {
@@ -42,9 +40,7 @@ export const getColumns = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link to={`/product/${row.original.id}`}>
-                <div className="max-w-[250px] truncate">{title}</div>
-              </Link>
+              <div className="max-w-[250px] truncate">{title}</div>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="max-w-md p-4">
               {title}
@@ -100,6 +96,14 @@ export const getColumns = ({
     cell: ({ row }) => {
       return (
         <div className="space-x-2">
+          <Link to={`/product/${row.original.id}`}>
+            <Button variant={'ghost'}>
+              <Eye className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Button onClick={() => editHandler(row.original)} size="sm">
+            <Pencil className="w-4 h-4" />
+          </Button>
           <LoadingButton
             isLoading={deletingProductId === row.original.id}
             onClick={() => deleteHandler(row.original.id)}
@@ -107,9 +111,6 @@ export const getColumns = ({
           >
             <Trash2 className="w-4 h-4" />
           </LoadingButton>
-          <Button onClick={() => editHandler(row.original)} size="sm">
-            <Pencil className="w-4 h-4" />
-          </Button>
         </div>
       )
     }

@@ -18,62 +18,60 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem
 } from '@/components/ui/dropdown-menu'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Plus } from 'lucide-react'
 import { useState } from 'react'
-import { getColumns } from './order-columns'
-import useOrders, { Order } from '@/hooks/use-orders'
+import UserDialog from './components/user-dialog'
+import { getColumns } from './users-columns'
+import { useDeleteUser } from './mutations/use-delete-user'
+import useUsers from './queries/use-users'
+import { APIUser } from '@/hooks/use-orders'
 import { Drawer } from '@/components/ui/drawer'
-import DateRangePicker from './components/date-range-picker'
-import OrderDrawer from './components/order-drawer'
-import { useDeleteOrder } from './mutations/use-delete-order'
-import { toast } from 'sonner'
-import { AxiosError } from 'axios'
+import UserDrawer from './components/user-drawer'
 import { TableSkeleton } from '../table-skeleton'
 
-export function OrdersDataTable() {
+export function UsersDataTable() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<APIUser | null>(null)
+  const [deletingUserId, setDeletingUserId] = useState<number | null>(null)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
-  const [deletingOrderId, setDeletingOrderId] = useState<number | null>(null)
 
-  const { data: orders = [], isLoading } = useOrders()
+  const { data: users = [], isLoading } = useUsers()
 
-  const { mutate } = useDeleteOrder({
-    onSuccess: data => {
-      toast.success('Order deleted successfully! ' + JSON.stringify(data))
-      setDeletingOrderId(null)
-    },
-    onError: error => {
-      const errMsg =
-        error instanceof AxiosError
-          ? (error.response?.data as string)
-          : 'Something went wrong while deleting order!'
-      toast.error(errMsg)
-      setDeletingOrderId(null)
+  const { mutate: deleteMutate } = useDeleteUser({
+    onSettled: () => {
+      setDeletingUserId(null)
     }
   })
 
-  const deleteOrderHandler = (orderId: number) => {
-    const deleteConfirm = confirm('Are you sure you want to delete this order?')
+  const deleteUserHandler = async (userId: number) => {
+    const deleteConfirm = confirm('Are you sure you want to delete this user?')
     if (!deleteConfirm) return
-    setDeletingOrderId(orderId)
-    mutate(orderId)
+    setDeletingUserId(userId)
+    deleteMutate(userId)
+  }
+
+  const editHandler = (user: APIUser) => {
+    setSelectedUser(user)
+    setIsDialogOpen(true)
   }
 
   const columns = getColumns({
-    setSelectedOrder,
-    deletingOrderId,
-    deleteHandler: deleteOrderHandler
+    deleteHandler: deleteUserHandler,
+    deletingUserId,
+    editHandler,
+    setSelectedUser
   })
 
   const table = useReactTable({
-    data: orders,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -99,7 +97,14 @@ export function OrdersDataTable() {
   return (
     <>
       <div className="flex items-center py-4 justify-between">
-        <DateRangePicker table={table} />
+        <Input
+          placeholder="Filter user names..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={event =>
+            table.getColumn('name')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -127,10 +132,20 @@ export function OrdersDataTable() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            onClick={() => {
+              setSelectedUser(null)
+              setIsDialogOpen(true)
+            }}
+            className="ml-4"
+          >
+            <Plus />
+            <span>Add User</span>
+          </Button>
         </div>
       </div>
-      <div className="rounded-md border">
-        <Drawer>
+      <Drawer>
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map(headerGroup => (
@@ -179,10 +194,10 @@ export function OrdersDataTable() {
               )}
             </TableBody>
           </Table>
+        </div>
 
-          <OrderDrawer selectedOrder={selectedOrder} />
-        </Drawer>
-      </div>
+        <UserDrawer selectedUser={selectedUser} />
+      </Drawer>
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
@@ -202,6 +217,12 @@ export function OrdersDataTable() {
           Next
         </Button>
       </div>
+
+      <UserDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        selectedUser={selectedUser}
+      />
     </>
   )
 }
