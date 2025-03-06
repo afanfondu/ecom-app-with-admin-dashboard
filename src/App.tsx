@@ -9,6 +9,7 @@ import ProductDetailsPage from './pages/product-details'
 import AdminLayout from './pages/dashboard/layout'
 import DashboardPage from './pages/dashboard/root'
 import ProductsManagementPage from './pages/dashboard/products-management'
+import OrdersManagementPage from './pages/dashboard/orders-management'
 
 function App() {
   return (
@@ -20,6 +21,11 @@ function App() {
             path="/dashboard/management/products"
             index
             element={<ProductsManagementPage />}
+          />
+          <Route
+            path="/dashboard/management/orders"
+            index
+            element={<OrdersManagementPage />}
           />
         </Route>
 
