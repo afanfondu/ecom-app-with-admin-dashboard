@@ -32,6 +32,8 @@ import { Drawer } from '@/components/ui/drawer'
 import DateRangePicker from './components/date-range-picker'
 import OrderDrawer from './components/order-drawer'
 import { useDeleteOrder } from './mutations/use-delete-order'
+import { toast } from 'sonner'
+import { AxiosError } from 'axios'
 
 export function OrdersDataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -41,7 +43,20 @@ export function OrdersDataTable() {
 
   const { data: orders = [], isLoading } = useOrders()
 
-  const { mutate } = useDeleteOrder({ setDeletingOrderId })
+  const { mutate } = useDeleteOrder({
+    onSuccess: data => {
+      toast.success('Order deleted successfully! ' + JSON.stringify(data))
+      setDeletingOrderId(null)
+    },
+    onError: error => {
+      const errMsg =
+        error instanceof AxiosError
+          ? (error.response?.data as string)
+          : 'Something went wrong while deleting order!'
+      toast.error(errMsg)
+      setDeletingOrderId(null)
+    }
+  })
 
   const deleteOrderHandler = (orderId: number) => {
     const deleteConfirm = confirm('Are you sure you want to delete this order?')

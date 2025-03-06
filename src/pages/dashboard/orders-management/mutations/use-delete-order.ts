@@ -1,25 +1,14 @@
 import api from '@/lib/api'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
+import { Product } from '@/lib/types'
+import { useMutation, UseMutationOptions } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 
 const deleteOrder = async (orderId: number) => {
   const { data } = await api.delete(`/carts/${orderId}`)
   return data
 }
 
-export const useDeleteOrder = ({
-  setDeletingOrderId
-}: {
-  setDeletingOrderId: React.Dispatch<React.SetStateAction<number | null>>
-}) =>
-  useMutation({
-    mutationFn: deleteOrder,
-    onSuccess: data => {
-      toast.success('Order deleted successfully! ' + JSON.stringify(data))
-      setDeletingOrderId(null)
-    },
-    onError: error => {
-      toast.error('Error deleting order: ' + error.message)
-      setDeletingOrderId(null)
-    }
-  })
+export const useDeleteOrder = (
+  opts: UseMutationOptions<Product, AxiosError, number>
+) =>
+  useMutation<Product, AxiosError, number>({ mutationFn: deleteOrder, ...opts })

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import useAuth from '@/store/useAuth'
 import { Role } from '@/lib/types'
-import { ProductsDataTable } from './data-table'
+import { ProductsDataTable } from './product-data-table'
 
 export default function ProductsManagementPage() {
   const user = useAuth(state => state.user)

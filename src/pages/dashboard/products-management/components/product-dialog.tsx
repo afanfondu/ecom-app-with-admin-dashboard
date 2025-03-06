@@ -16,11 +16,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { productFormSchema, ProductFormType } from './schema'
-import { addProduct, editProduct } from './actions'
+import { productFormSchema, ProductFormType } from '../schema'
 import { LoadingButton } from '@/components/shared/loading-button'
 import { toast } from 'sonner'
-import { useMutation } from '@tanstack/react-query'
 import { Category, Product } from '@/lib/types'
 import {
   Select,
@@ -31,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { useAddProduct } from '../mutations/use-add-product'
+import { useUpdateProduct } from '../mutations/use-update-product'
 
 export default function ProductDialog({
   selectedProduct,
@@ -54,45 +54,39 @@ export default function ProductDialog({
     }
   })
 
-  const { isPending, mutate } = useMutation({
-    mutationFn: addProduct,
+  const { mutate, isPending } = useAddProduct({
     onSuccess: data => {
       toast.success(
         'Product added successfully\n' + JSON.stringify(data, null, 2)
       )
       form.reset()
       onOpenChange(false)
-    },
-    onError: error => {
-      toast.error(error.message)
     }
   })
 
-  const { isPending: isEditPending, mutate: editMutate } = useMutation({
-    mutationFn: editProduct,
-    onSuccess: data => {
-      toast.success(
-        'Product edited successfully\n' + JSON.stringify(data, null, 2)
-      )
-      form.reset()
-      onOpenChange(false)
-    },
-    onError: error => {
-      toast.error(error.message)
+  const { isPending: isUpdatePending, mutate: updateMutate } = useUpdateProduct(
+    {
+      onSuccess: data => {
+        toast.success(
+          'Product edited successfully\n' + JSON.stringify(data, null, 2)
+        )
+        form.reset()
+        onOpenChange(false)
+      }
     }
-  })
+  )
 
   async function onSubmit(values: ProductFormType) {
-    if (selectedProduct) editMutate({ ...values, id: selectedProduct.id })
+    if (selectedProduct) updateMutate({ ...values, id: selectedProduct.id })
     else mutate(values)
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="Form to add or edit products">
+      <DialogContent aria-describedby="Form to add or update products">
         <DialogHeader>
           <DialogTitle>
-            {selectedProduct ? 'Edit Product' : 'Add New Product'}
+            {selectedProduct ? 'Update Product' : 'Add New Product'}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
@@ -183,7 +177,7 @@ export default function ProductDialog({
             <LoadingButton
               type="submit"
               className="w-full"
-              isLoading={isPending || isEditPending}
+              isLoading={isPending || isUpdatePending}
             >
               {selectedProduct ? 'Update Product' : 'Add Product'}
             </LoadingButton>
