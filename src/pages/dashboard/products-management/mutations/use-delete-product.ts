@@ -14,11 +14,14 @@ export const useDeleteProduct = (
 ) =>
   useMutation({
     mutationFn: deleteProduct,
+    onSuccess: data => {
+      toast.success('Product deleted successfully! ' + JSON.stringify(data))
+    },
     onError: error => {
       const errMsg =
         error instanceof AxiosError
           ? (error.response?.data as string)
-          : 'Something went wrong while deleting a new product!'
+          : 'Something went wrong while deleting a product'
       toast.error(errMsg)
     },
     ...opts

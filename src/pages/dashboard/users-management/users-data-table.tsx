@@ -35,6 +35,7 @@ import { APIUser } from '@/hooks/use-orders'
 import { Drawer } from '@/components/ui/drawer'
 import UserDrawer from './components/user-drawer'
 import { TableSkeleton } from '../table-skeleton'
+import AlertError from '@/components/shared/alert-error'
 
 export function UsersDataTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -43,7 +44,7 @@ export function UsersDataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const { data: users = [], isLoading } = useUsers()
+  const { data: users = [], isLoading, error } = useUsers()
 
   const { mutate: deleteMutate } = useDeleteUser({
     onSettled: () => {
@@ -93,6 +94,7 @@ export function UsersDataTable() {
   })
 
   if (isLoading) return <TableSkeleton />
+  if (error) return <AlertError description={error.message} />
 
   return (
     <>

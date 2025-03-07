@@ -35,6 +35,7 @@ import { useDeleteOrder } from './mutations/use-delete-order'
 import { toast } from 'sonner'
 import { AxiosError } from 'axios'
 import { TableSkeleton } from '../table-skeleton'
+import AlertError from '@/components/shared/alert-error'
 
 export function OrdersDataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -42,7 +43,7 @@ export function OrdersDataTable() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [deletingOrderId, setDeletingOrderId] = useState<number | null>(null)
 
-  const { data: orders = [], isLoading } = useOrders()
+  const { data: orders = [], isLoading, error } = useOrders()
 
   const { mutate } = useDeleteOrder({
     onSuccess: data => {
@@ -95,6 +96,7 @@ export function OrdersDataTable() {
   })
 
   if (isLoading) return <TableSkeleton />
+  if (error) return <AlertError description={error.message} />
 
   return (
     <>

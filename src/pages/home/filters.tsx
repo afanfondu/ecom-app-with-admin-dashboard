@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import useCategories from '@/hooks/useCategories'
+import useCategories from '@/hooks/use-categories'
 import CategoryListSkeleton from './filters-skeleton'
 import { Select, SelectContent } from '@/components/ui/select'
 import { SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'

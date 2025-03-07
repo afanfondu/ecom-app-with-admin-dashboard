@@ -29,12 +29,11 @@ import { ChevronDown, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { Product } from '@/lib/types'
 import ProductDialog from './components/product-dialog'
-import { toast } from 'sonner'
 import { getColumns } from './product-columns'
-import useProducts from '@/hooks/useProducts'
+import useProducts from '@/hooks/use-products'
 import { useDeleteProduct } from './mutations/use-delete-product'
-import { AxiosError } from 'axios'
 import { TableSkeleton } from '../table-skeleton'
+import AlertError from '@/components/shared/alert-error'
 
 export function ProductsDataTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -45,19 +44,10 @@ export function ProductsDataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const { data: products = [], isLoading } = useProducts({})
+  const { data: products = [], isLoading, error } = useProducts({})
 
   const { mutate: deleteMutate } = useDeleteProduct({
-    onSuccess: data => {
-      toast.success('Product deleted successfully! ' + JSON.stringify(data))
-      setDeletingProductId(null)
-    },
-    onError: error => {
-      const errMsg =
-        error instanceof AxiosError
-          ? (error.response?.data as string)
-          : 'Something went wrong while deleting Product'
-      toast.error(errMsg)
+    onSettled: () => {
       setDeletingProductId(null)
     }
   })
@@ -105,6 +95,7 @@ export function ProductsDataTable() {
   })
 
   if (isLoading) return <TableSkeleton tableClassName="h-[435px]" />
+  if (error) return <AlertError description={error.message} />
 
   return (
     <>

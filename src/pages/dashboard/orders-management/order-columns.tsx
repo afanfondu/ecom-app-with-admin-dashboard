@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Order } from '@/hooks/use-orders'
 import { Button } from '@/components/ui/button'
-import { Eye, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Eye, Trash2 } from 'lucide-react'
 import { DrawerTrigger } from '@/components/ui/drawer'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { LoadingButton } from '@/components/shared/loading-button'
@@ -63,13 +63,27 @@ export const getColumns = ({
   },
   {
     accessorKey: 'total',
-    header: 'Total',
+    accessorFn: row =>
+      row.products.reduce(
+        (total, item) => total + item.product.price * item.quantity,
+        0
+      ),
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={'ghost'}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Total <ArrowUpDown className="w-4 h-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const total = row.original.products.reduce(
         (total, item) => total + item.product.price * item.quantity,
         0
       )
-      return <div>{formatCurrency(total)}</div>
+      return <div className="pl-4">{formatCurrency(total)}</div>
     }
   },
   {

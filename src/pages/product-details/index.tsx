@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router'
 import ProductDetailsSkeleton from './product-details-skeleton'
 import { ChevronsLeft } from 'lucide-react'
 import { toast } from 'sonner'
-import useProductDetails from '@/hooks/useProductDetails'
+import useProductDetails from '@/hooks/use-product-details'
 import useCart from '@/store/useCart'
 
 export default function ProductDetailsPage() {

@@ -5,7 +5,6 @@ import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 const updateUser = async (user: APIUser) => {
-  console.log('updateUser', user)
   const { data } = await api.put(`/users/${user.id}`, user)
   return data
 }

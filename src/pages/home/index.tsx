@@ -1,10 +1,10 @@
 import ProductsSkeleton from './products-skeleton'
 import ProductCard from './product-card'
 import AlertError from '@/components/shared/alert-error'
-import useProducts from '@/hooks/useProducts'
-import Filters from './Filters'
+import useProducts from '@/hooks/use-products'
+import Filters from './filters'
 import { useSearchParams } from 'react-router'
-import useCategoryProducts from '@/hooks/useCategoryProducts'
+import useCategoryProducts from '@/hooks/use-category-products'
 
 export default function HomePage() {
   const [searchParams] = useSearchParams()

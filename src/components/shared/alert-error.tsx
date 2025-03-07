@@ -2,8 +2,8 @@ import { AlertCircle } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
 
 export default function AlertError({
-  title = 'Error',
-  description = 'Something went wrong!'
+  title = 'Something went wrong!',
+  description = 'Something went wrong! Please try again. later.'
 }: {
   title?: string
   description?: string
