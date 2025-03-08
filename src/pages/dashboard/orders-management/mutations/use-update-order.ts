@@ -1,5 +1,6 @@
 import { Order } from '@/hooks/use-orders'
 import api from '@/lib/api'
+import { onError } from '@/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
@@ -20,9 +21,7 @@ export const useUpdateOrder = () =>
   useMutation({
     mutationFn: updateOrder,
     onSuccess: data => {
-      toast.success('Order updated successfully! ' + JSON.stringify(data))
+      toast.success(`Order with ID ${data.id} has been marked as delivered.`)
     },
-    onError: error => {
-      toast.error('Error updating order: ' + error.message)
-    }
+    onError
   })

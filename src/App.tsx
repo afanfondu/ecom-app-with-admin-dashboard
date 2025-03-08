@@ -6,7 +6,7 @@ import LoginPage from './pages/login'
 import HomePage from './pages/home'
 import CartPage from './pages/cart'
 import ProductDetailsPage from './pages/product-details'
-import AdminLayout from './pages/dashboard/layout'
+import DashboardLayout from './pages/dashboard/layout'
 import DashboardPage from './pages/dashboard/root'
 import ProductsManagementPage from './pages/dashboard/products-management'
 import OrdersManagementPage from './pages/dashboard/orders-management'
@@ -16,7 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/dashboard" element={<AdminLayout />}>
+        <Route path="/dashboard" element={<DashboardLayout />}>
           <Route path="/dashboard" index element={<DashboardPage />} />
           <Route
             path="/dashboard/management/products"

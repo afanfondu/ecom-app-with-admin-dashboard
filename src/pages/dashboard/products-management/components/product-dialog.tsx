@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/select'
 import { useAddProduct } from '../mutations/use-add-product'
 import { useUpdateProduct } from '../mutations/use-update-product'
+import { Button } from '@/components/ui/button'
 
 export default function ProductDialog({
   selectedProduct,
@@ -57,7 +58,7 @@ export default function ProductDialog({
   const { mutate, isPending } = useAddProduct({
     onSuccess: data => {
       toast.success(
-        'Product added successfully\n' + JSON.stringify(data, null, 2)
+        `New product with ID ${data.id} has been created successfully.`
       )
       form.reset()
       onOpenChange(false)
@@ -67,9 +68,7 @@ export default function ProductDialog({
   const { isPending: isUpdatePending, mutate: updateMutate } = useUpdateProduct(
     {
       onSuccess: data => {
-        toast.success(
-          'Product edited successfully\n' + JSON.stringify(data, null, 2)
-        )
+        toast.success(`Product with ID ${data.id} has been updated.`)
         form.reset()
         onOpenChange(false)
       }
@@ -174,13 +173,22 @@ export default function ProductDialog({
                 </FormItem>
               )}
             />
-            <LoadingButton
-              type="submit"
-              className="w-full"
-              isLoading={isPending || isUpdatePending}
-            >
-              {selectedProduct ? 'Update Product' : 'Add Product'}
-            </LoadingButton>
+
+            <div className="flex justify-end gap-2 mt-8">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <LoadingButton
+                isLoading={isPending || isUpdatePending}
+                type="submit"
+              >
+                {selectedProduct ? 'Update Product' : 'Add Product'}
+              </LoadingButton>
+            </div>
           </form>
         </Form>
       </DialogContent>

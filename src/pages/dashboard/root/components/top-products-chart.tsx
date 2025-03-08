@@ -13,7 +13,7 @@ import useProducts from '@/hooks/use-products'
 const chartConfig = {
   revenue: {
     label: 'Revenue',
-    color: 'var(--chart-1)'
+    color: 'var(--primary)'
   }
 } satisfies ChartConfig
 

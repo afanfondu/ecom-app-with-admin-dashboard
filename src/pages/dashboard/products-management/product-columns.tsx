@@ -14,12 +14,29 @@ import { Link } from 'react-router'
 export const getColumns = ({
   deleteHandler,
   deletingProductId,
-  editHandler
+  editHandler,
+  isAdmin
 }: {
   deleteHandler: (productId: number) => void
   deletingProductId: number | null
   editHandler: (product: Product) => void
+  isAdmin: boolean
 }): ColumnDef<Product>[] => [
+  {
+    accessorKey: 'id',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">#{row.original.id}</div>
+  },
   {
     accessorKey: 'image',
     header: 'Image',
@@ -101,16 +118,20 @@ export const getColumns = ({
               <Eye className="w-4 h-4" />
             </Button>
           </Link>
-          <Button onClick={() => editHandler(row.original)} size="sm">
-            <Pencil className="w-4 h-4" />
-          </Button>
-          <LoadingButton
-            isLoading={deletingProductId === row.original.id}
-            onClick={() => deleteHandler(row.original.id)}
-            variant="destructive"
-          >
-            <Trash2 className="w-4 h-4" />
-          </LoadingButton>
+          {isAdmin && (
+            <>
+              <Button onClick={() => editHandler(row.original)} size="sm">
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <LoadingButton
+                isLoading={deletingProductId === row.original.id}
+                onClick={() => deleteHandler(row.original.id)}
+                variant="destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+              </LoadingButton>
+            </>
+          )}
         </div>
       )
     }

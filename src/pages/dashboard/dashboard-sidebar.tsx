@@ -9,7 +9,8 @@ import {
   SidebarMenuSubItem,
   SidebarMenuButton,
   SidebarGroupLabel,
-  SidebarHeader
+  SidebarHeader,
+  SidebarFooter
 } from '@/components/ui/sidebar'
 import {
   Collapsible,
@@ -20,6 +21,7 @@ import {
   AppWindow,
   Boxes,
   ChevronDown,
+  ChevronUp,
   House,
   LayoutDashboard,
   Package,
@@ -28,14 +30,29 @@ import {
 } from 'lucide-react'
 import { ActiveLink } from '@/components/shared/navbar'
 import { Link } from 'react-router'
+import ThemeToggle from '@/components/shared/theme-toggle'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu'
+import useAuth from '@/store/useAuth'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 export default function DashboardSidebar() {
+  const user = useAuth(state => state.user)
+  const removeAuth = useAuth(state => state.removeAuth)
+
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link to="/" className="flex items-center p-2">
-          <h3 className="text-xl font-bold">E.</h3>
-        </Link>
+        <div className="flex items-center p-2 justify-between">
+          <Link to="/">
+            <h3 className="text-xl font-bold">E.</h3>
+          </Link>
+          <ThemeToggle />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -133,6 +150,36 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton>
+                  <div className="flex items-center space-x-2 cursor-pointer">
+                    <Avatar>
+                      <AvatarFallback className="bg-primary text-white">
+                        {user?.name[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <span>{user?.name}</span>
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
+                <DropdownMenuItem onClick={() => removeAuth()}>
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

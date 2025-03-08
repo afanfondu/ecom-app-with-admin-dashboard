@@ -1,8 +1,8 @@
 import api from '@/lib/api'
 import { Product } from '@/lib/types'
+import { onError } from '@/lib/utils'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { toast } from 'sonner'
 
 type NewProduct = Omit<Product, 'id' | 'rating'>
 
@@ -16,12 +16,6 @@ export const useAddProduct = (
 ) =>
   useMutation({
     mutationFn: addProduct,
-    onError: error => {
-      const errMsg =
-        error instanceof AxiosError
-          ? (error.response?.data as string)
-          : 'Something went wrong while adding a new product!'
-      toast.error(errMsg)
-    },
+    onError,
     ...opts
   })

@@ -5,6 +5,7 @@ import { ChevronsLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import useProductDetails from '@/hooks/use-product-details'
 import useCart from '@/store/useCart'
+import AlertError from '@/components/shared/alert-error'
 
 export default function ProductDetailsPage() {
   const navigate = useNavigate()
@@ -12,13 +13,13 @@ export default function ProductDetailsPage() {
 
   if (!productId) <div>Product not found</div>
 
-  const { data: product, isLoading } = useProductDetails(productId!)
+  const { data: product, isLoading, error } = useProductDetails(productId!)
   const items = useCart(state => state.items)
   const addItem = useCart(state => state.addItem)
 
   if (isLoading) return <ProductDetailsSkeleton />
-
-  if (!product) return <div>Product not found</div>
+  if (error) return <AlertError description={error.message} />
+  if (!product) return <AlertError description="Product not found" />
 
   const addToCart = () => {
     const itemExists = items.find(item => item.product.id === product.id)
@@ -30,7 +31,7 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button variant="outline" className="mb-8" onClick={() => navigate(-1)}>
+      <Button className="mb-8" onClick={() => navigate(-1)}>
         <ChevronsLeft /> Back
       </Button>
 

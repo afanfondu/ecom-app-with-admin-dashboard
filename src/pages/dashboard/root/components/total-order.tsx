@@ -12,7 +12,7 @@ import useOrders from '@/hooks/use-orders'
 const chartConfig = {
   order: {
     label: 'Order',
-    color: 'var(--chart-1)'
+    color: 'var(--primary)'
   }
 } satisfies ChartConfig
 
@@ -41,6 +41,7 @@ export function TotalOrder() {
             accessibilityLayer
             data={chartData}
             margin={{
+              top: 12,
               left: 12,
               right: 12
             }}

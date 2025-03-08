@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'sonner'
 
 const api = axios.create({
   baseURL: 'https://fakestoreapi.com',
@@ -8,12 +9,11 @@ const api = axios.create({
 })
 
 api.interceptors.response.use(res => {
-  console.log(
-    res.config.method?.toUpperCase().padEnd(6),
-    res.config.url,
-    res.config.params,
-    res.status
-  )
+  if (res.config.method !== 'get') {
+    toast.info(
+      `${res.config.method?.toUpperCase()} ${res.config.url} ${res.status}`
+    )
+  }
   return res
 })
 

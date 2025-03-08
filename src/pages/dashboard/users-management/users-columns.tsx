@@ -9,16 +9,30 @@ export const getColumns = ({
   deleteHandler,
   deletingUserId,
   editHandler,
-  setSelectedUser
+  setSelectedUser,
+  isAdmin
 }: {
   deletingUserId: number | null
   deleteHandler: (userId: number) => void
   editHandler: (user: APIUser) => void
   setSelectedUser: React.Dispatch<React.SetStateAction<APIUser | null>>
+  isAdmin: boolean
 }): ColumnDef<APIUser>[] => [
   {
     accessorKey: 'id',
-    header: 'ID'
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={'ghost'}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          ID <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      return <p className="pl-8">{row.original.id}</p>
+    }
   },
   {
     accessorKey: 'username',
@@ -33,7 +47,7 @@ export const getColumns = ({
       )
     },
     cell: ({ row }) => {
-      return <p className="pl-4">{row.original.username}</p>
+      return <p className="pl-8">{row.original.username}</p>
     }
   },
   {
@@ -69,16 +83,20 @@ export const getColumns = ({
               <Eye className="w-4 h-4" />
             </Button>
           </DrawerTrigger>
-          <Button onClick={() => editHandler(row.original)} size="sm">
-            <Pencil className="w-4 h-4" />
-          </Button>
-          <LoadingButton
-            isLoading={deletingUserId === row.original.id}
-            onClick={() => deleteHandler(row.original.id)}
-            variant="destructive"
-          >
-            <Trash2 className="w-4 h-4" />
-          </LoadingButton>
+          {isAdmin && (
+            <>
+              <Button onClick={() => editHandler(row.original)} size="sm">
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <LoadingButton
+                isLoading={deletingUserId === row.original.id}
+                onClick={() => deleteHandler(row.original.id)}
+                variant="destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+              </LoadingButton>
+            </>
+          )}
         </div>
       )
     }

@@ -33,29 +33,25 @@ import DateRangePicker from './components/date-range-picker'
 import OrderDrawer from './components/order-drawer'
 import { useDeleteOrder } from './mutations/use-delete-order'
 import { toast } from 'sonner'
-import { AxiosError } from 'axios'
 import { TableSkeleton } from '../table-skeleton'
 import AlertError from '@/components/shared/alert-error'
+import useAuth from '@/store/useAuth'
+import { Role } from '@/lib/types'
 
 export function OrdersDataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [deletingOrderId, setDeletingOrderId] = useState<number | null>(null)
+  const user = useAuth(state => state.user)
 
   const { data: orders = [], isLoading, error } = useOrders()
 
   const { mutate } = useDeleteOrder({
     onSuccess: data => {
-      toast.success('Order deleted successfully! ' + JSON.stringify(data))
-      setDeletingOrderId(null)
+      toast.success(`Order with ID ${data.id} has been deleted.`)
     },
-    onError: error => {
-      const errMsg =
-        error instanceof AxiosError
-          ? (error.response?.data as string)
-          : 'Something went wrong while deleting order!'
-      toast.error(errMsg)
+    onSettled: () => {
       setDeletingOrderId(null)
     }
   })
@@ -70,7 +66,8 @@ export function OrdersDataTable() {
   const columns = getColumns({
     setSelectedOrder,
     deletingOrderId,
-    deleteHandler: deleteOrderHandler
+    deleteHandler: deleteOrderHandler,
+    isAdmin: user?.role === Role.Admin
   })
 
   const table = useReactTable({
@@ -182,7 +179,7 @@ export function OrdersDataTable() {
             </TableBody>
           </Table>
 
-          <OrderDrawer selectedOrder={selectedOrder} />
+          {selectedOrder && <OrderDrawer selectedOrder={selectedOrder} />}
         </Drawer>
       </div>
 

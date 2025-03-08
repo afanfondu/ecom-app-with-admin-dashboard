@@ -1,5 +1,6 @@
 import { APIUser } from '@/hooks/use-orders'
 import api from '@/lib/api'
+import { onError } from '@/lib/utils'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
@@ -15,14 +16,8 @@ export const useDeleteUser = (
   useMutation({
     mutationFn: deleteUser,
     onSuccess: data => {
-      toast.success('User deleted successfully! ' + JSON.stringify(data))
+      toast.success(`User with ID ${data.id} has been deleted.`)
     },
-    onError: error => {
-      const errMsg =
-        error instanceof AxiosError
-          ? (error.response?.data as string)
-          : 'Something went wrong while deleting a new user!'
-      toast.error(errMsg)
-    },
+    onError,
     ...opts
   })

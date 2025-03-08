@@ -47,7 +47,7 @@ export default function Component() {
                 {items.length}
               </span>
             </ActiveLink>
-            {user && user.role === Role.Admin && (
+            {user && (user.role === Role.Admin || user.role === Role.Staff) && (
               <ActiveLink to="/dashboard">Dashboard</ActiveLink>
             )}
           </nav>
@@ -61,7 +61,7 @@ export default function Component() {
                   <DropdownMenuTrigger asChild>
                     <div className="flex items-center space-x-2 cursor-pointer">
                       <Avatar>
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary text-white">
                           {user.name[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -158,7 +158,7 @@ export function ActiveLink({
         cn(
           'transition-colors',
           isActive
-            ? 'text-primary font-medium'
+            ? 'text-gray-900 dark:text-gray-50 font-medium'
             : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
           className
         )

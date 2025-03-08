@@ -56,7 +56,7 @@ export default function UserDialog({
 
   const { mutate, isPending } = useAddUser({
     onSuccess: data => {
-      toast.success('User added successfully\n' + JSON.stringify(data))
+      toast.success(`New User with ID ${data.id} has been added successfully.`)
       form.reset()
       onOpenChange(false)
     }
@@ -64,7 +64,7 @@ export default function UserDialog({
 
   const { mutate: updateMutate, isPending: isUpdatePending } = useUpdateUser({
     onSuccess: data => {
-      toast.success('User edited successfully\n' + JSON.stringify(data))
+      toast.success(`User with ID ${data.id} has been updated successfully.`)
       form.reset()
       onOpenChange(false)
     }
@@ -99,7 +99,7 @@ export default function UserDialog({
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="johnd" {...field} />
+                      <Input placeholder="john" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -237,7 +237,7 @@ export default function UserDialog({
               />
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-8">
               <Button
                 type="button"
                 variant="outline"

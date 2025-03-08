@@ -9,16 +9,27 @@ import { LoadingButton } from '@/components/shared/loading-button'
 export const getColumns = ({
   setSelectedOrder,
   deletingOrderId,
-  deleteHandler
+  deleteHandler,
+  isAdmin
 }: {
   setSelectedOrder: React.Dispatch<React.SetStateAction<Order | null>>
   deleteHandler: (orderId: number) => void
   deletingOrderId: number | null
+  isAdmin: boolean
 }): ColumnDef<Order>[] => [
   {
     accessorKey: 'id',
-    header: 'Order ID',
-    cell: ({ row }) => <div>#{row.original.id}</div>
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={'ghost'}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Order ID <ArrowUpDown className="w-4 h-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="pl-8">#{row.original.id}</div>
   },
   {
     accessorKey: 'customerName',
@@ -96,13 +107,15 @@ export const getColumns = ({
               <Eye className="w-4 h-4" />
             </Button>
           </DrawerTrigger>
-          <LoadingButton
-            isLoading={deletingOrderId === row.original.id}
-            onClick={() => deleteHandler(row.original.id)}
-            variant={'destructive'}
-          >
-            <Trash2 className="w-4 h-4" />
-          </LoadingButton>
+          {isAdmin && (
+            <LoadingButton
+              isLoading={deletingOrderId === row.original.id}
+              onClick={() => deleteHandler(row.original.id)}
+              variant={'destructive'}
+            >
+              <Trash2 className="w-4 h-4" />
+            </LoadingButton>
+          )}
         </div>
       )
     }

@@ -27,13 +27,14 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ChevronDown, Plus } from 'lucide-react'
 import { useState } from 'react'
-import { Product } from '@/lib/types'
+import { Product, Role } from '@/lib/types'
 import ProductDialog from './components/product-dialog'
 import { getColumns } from './product-columns'
 import useProducts from '@/hooks/use-products'
 import { useDeleteProduct } from './mutations/use-delete-product'
 import { TableSkeleton } from '../table-skeleton'
 import AlertError from '@/components/shared/alert-error'
+import useAuth from '@/store/useAuth'
 
 export function ProductsDataTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -43,6 +44,7 @@ export function ProductsDataTable() {
   )
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
+  const user = useAuth(state => state.user)
 
   const { data: products = [], isLoading, error } = useProducts({})
 
@@ -69,7 +71,8 @@ export function ProductsDataTable() {
   const columns = getColumns({
     deleteHandler,
     deletingProductId,
-    editHandler
+    editHandler,
+    isAdmin: user?.role === Role.Admin
   })
 
   const table = useReactTable({
@@ -135,16 +138,18 @@ export function ProductsDataTable() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            onClick={() => {
-              setSelectedProduct(null)
-              setIsDialogOpen(true)
-            }}
-            className="ml-4"
-          >
-            <Plus />
-            <span>Add Product</span>
-          </Button>
+          {user?.role === Role.Admin && (
+            <Button
+              onClick={() => {
+                setSelectedProduct(null)
+                setIsDialogOpen(true)
+              }}
+              className="ml-4"
+            >
+              <Plus />
+              <span>Add Product</span>
+            </Button>
+          )}
         </div>
       </div>
       <div className="rounded-md border">

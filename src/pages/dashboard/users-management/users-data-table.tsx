@@ -36,6 +36,8 @@ import { Drawer } from '@/components/ui/drawer'
 import UserDrawer from './components/user-drawer'
 import { TableSkeleton } from '../table-skeleton'
 import AlertError from '@/components/shared/alert-error'
+import useAuth from '@/store/useAuth'
+import { Role } from '@/lib/types'
 
 export function UsersDataTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -43,6 +45,7 @@ export function UsersDataTable() {
   const [deletingUserId, setDeletingUserId] = useState<number | null>(null)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
+  const user = useAuth(state => state.user)
 
   const { data: users = [], isLoading, error } = useUsers()
 
@@ -68,7 +71,8 @@ export function UsersDataTable() {
     deleteHandler: deleteUserHandler,
     deletingUserId,
     editHandler,
-    setSelectedUser
+    setSelectedUser,
+    isAdmin: user?.role === Role.Admin
   })
 
   const table = useReactTable({
@@ -134,16 +138,18 @@ export function UsersDataTable() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            onClick={() => {
-              setSelectedUser(null)
-              setIsDialogOpen(true)
-            }}
-            className="ml-4"
-          >
-            <Plus />
-            <span>Add User</span>
-          </Button>
+          {user?.role === Role.Admin && (
+            <Button
+              onClick={() => {
+                setSelectedUser(null)
+                setIsDialogOpen(true)
+              }}
+              className="ml-4"
+            >
+              <Plus />
+              <span>Add User</span>
+            </Button>
+          )}
         </div>
       </div>
       <Drawer>
@@ -198,7 +204,7 @@ export function UsersDataTable() {
           </Table>
         </div>
 
-        <UserDrawer selectedUser={selectedUser} />
+        {selectedUser && <UserDrawer selectedUser={selectedUser} />}
       </Drawer>
 
       <div className="flex items-center justify-end space-x-2 py-4">

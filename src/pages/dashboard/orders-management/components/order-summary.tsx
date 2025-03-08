@@ -3,9 +3,12 @@ import { Separator } from '@radix-ui/react-dropdown-menu'
 import { LoadingButton } from '@/components/shared/loading-button'
 import { Order } from '@/hooks/use-orders'
 import { useUpdateOrder } from '../mutations/use-update-order'
+import useAuth from '@/store/useAuth'
+import { Role } from '@/lib/types'
 
 export default function OrderSummary({ order }: { order: Order }) {
   const { mutate, isPending } = useUpdateOrder()
+  const user = useAuth(state => state.user)
 
   const subtotal = order.products.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -32,13 +35,15 @@ export default function OrderSummary({ order }: { order: Order }) {
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-          <LoadingButton
-            isLoading={isPending}
-            onClick={() => mutate(order)}
-            className="w-full"
-          >
-            Mark it as Delivered
-          </LoadingButton>
+          {user?.role === Role.Admin && (
+            <LoadingButton
+              isLoading={isPending}
+              onClick={() => mutate(order)}
+              className="w-full"
+            >
+              Mark it as Delivered
+            </LoadingButton>
+          )}
         </div>
       </Card>
     </div>

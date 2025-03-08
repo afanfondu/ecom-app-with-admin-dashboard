@@ -2,24 +2,19 @@ import { Card } from '@/components/ui/card'
 import useAuth from '@/store/useAuth'
 import useCart from '@/store/useCart'
 import { Separator } from '@radix-ui/react-dropdown-menu'
-import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { placeOrder } from './actions'
 import { LoadingButton } from '@/components/shared/loading-button'
+import { usePlaceOrder } from './mutations/use-place-order'
 
 export default function OrderSummary() {
   const user = useAuth(state => state.user)
   const items = useCart(state => state.items)
   const emptyCart = useCart(state => state.emptyCart)
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: placeOrder,
+  const { mutate, isPending } = usePlaceOrder({
     onSuccess: data => {
       emptyCart()
-      toast.success('Order placed successfully\n' + JSON.stringify(data))
-    },
-    onError: error => {
-      toast.error(error.message)
+      toast.success(`Order with ID ${data.id} has been placed successfully.`)
     }
   })
 

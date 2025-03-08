@@ -62,7 +62,7 @@ export default function DashboardPage() {
                         ${averageOrderValue.toFixed(2)}
                       </p>
                     </div>
-                    <div className="bg-purple-100 p-2 rounded-full">
+                    <div className="bg-purple-200 p-2 rounded-full">
                       <TrendingUp className="h-6 w-6 text-purple-600" />
                     </div>
                   </div>
@@ -78,8 +78,8 @@ export default function DashboardPage() {
                       </p>
                       <p className="text-2xl font-bold">{totalProducts}</p>
                     </div>
-                    <div className="bg-amber-100 p-2 rounded-full">
-                      <PackageIcon className="h-6 w-6 text-amber-600" />
+                    <div className="p-2 bg-blue-200 rounded-full">
+                      <PackageIcon className="h-6 w-6 text-blue-600" />
                     </div>
                   </div>
                 </CardContent>

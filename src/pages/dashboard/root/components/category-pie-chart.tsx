@@ -13,7 +13,7 @@ import { formatCurrency } from '@/lib/utils'
 const chartConfig = {
   electronics: {
     label: 'Electronics',
-    color: 'var(--chart-2)'
+    color: 'var(--chart-5)'
   },
   jewelery: {
     label: 'Jewelery',
@@ -21,11 +21,11 @@ const chartConfig = {
   },
   mensclothing: {
     label: "Men's Clothing",
-    color: 'var(--chart-1)'
+    color: 'var(--primary)'
   },
   womensclothing: {
     label: "Women's Clothing",
-    color: 'var(--chart-5)'
+    color: 'var(--chart-2)'
   }
 } satisfies ChartConfig
 

@@ -19,22 +19,17 @@ import {
 } from '@/components/ui/form'
 import { Link } from 'react-router'
 import { LoadingButton } from '@/components/shared/loading-button'
-import { toast } from 'sonner'
-import { login } from './actions'
-import { useMutation } from '@tanstack/react-query'
 import useAuth from '@/store/useAuth'
+import { useLogin } from './mutations/use-login'
 
 export function LoginForm() {
   const setAuth = useAuth(state => state.setAuth)
-  const { mutate, isPending } = useMutation({
-    mutationFn: login,
+  const { mutate, isPending } = useLogin({
     onSuccess: data => {
       setAuth(data.token)
-    },
-    onError: error => {
-      toast.error(error.message)
     }
   })
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
