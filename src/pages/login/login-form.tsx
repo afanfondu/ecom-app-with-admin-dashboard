@@ -21,7 +21,6 @@ import { Link } from 'react-router'
 import { LoadingButton } from '@/components/shared/loading-button'
 import useAuth from '@/store/useAuth'
 import { useLogin } from './mutations/use-login'
-import { Alert } from '@/components/ui/alert'
 
 export function LoginForm() {
   const setAuth = useAuth(state => state.setAuth)
