@@ -21,6 +21,7 @@ import { Link } from 'react-router'
 import { LoadingButton } from '@/components/shared/loading-button'
 import useAuth from '@/store/useAuth'
 import { useLogin } from './mutations/use-login'
+import { Alert } from '@/components/ui/alert'
 
 export function LoginForm() {
   const setAuth = useAuth(state => state.setAuth)
@@ -55,7 +56,8 @@ export function LoginForm() {
           >
             users
           </Link>{' '}
-          list. Admin user: username - donero, password - ewedon
+          list. Admin user: username - donero, password - ewedon. Staff user:
+          username - johnd, password - m38rmF$
         </CardDescription>
       </CardHeader>
       <CardContent>
